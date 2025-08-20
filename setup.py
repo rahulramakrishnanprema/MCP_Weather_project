@@ -7,17 +7,9 @@ setup(
     install_requires=[
         'langchain',
         'langgraph',
-        'openswe',
         'transformers',
     ],
-    entry_points={
-        'openswe.agents': [
-            'manager = mcp_weather_project.agents.manager_agent:ManagerAgent',
-            'planner = mcp_weather_project.agents.planner_agent:PlannerAgent',
-            'researcher = mcp_weather_project.agents.researcher_agent:ResearcherAgent',
-            'reviewer = mcp_weather_project.agents.reviewer_agent:ReviewerAgent',
-        ],
-    },
     python_requires='>=3.9',
 )
+
 
