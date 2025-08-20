@@ -1,6 +1,8 @@
-from typing import List, TypedDict, Annotated
+from typing import List, TypedDict, Annotated, Union
 from langchain_core.messages import BaseMessage
 
+from langchain_core.tools import tool
+from langgraph.prebuilt import ToolNode
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 
@@ -59,6 +61,30 @@ def planner_agent(state: ResearchState) -> ResearchState:
     research_plan = research_plan_obj.plan
     
     return {"research_plan": research_plan, "messages": state["messages"] + [("assistant", f"Research plan generated: {research_plan}")]}
+
+async def researcher_agent(state: ResearchState) -> ResearchState:
+    """Iterates through the research plan, performs web searches, and collects results."""
+    research_plan = state["research_plan"]
+    search_results = state.get("search_results", [])
+    messages = state["messages"]
+
+    # Get the perform_web_search tool from the client
+    tools = await client.get_tools()
+    perform_web_search_tool = next((t for t in tools if t.name == "perform_web_search"), None)
+
+    if not perform_web_search_tool:
+        raise ValueError("perform_web_search tool not found.")
+
+    for query in research_plan:
+        # Simulate calling the tool via ToolNode or directly if possible
+        # For simplicity, directly calling the tool function here.
+        # In a real LangGraph setup, this would be handled by a ToolNode.
+        result = perform_web_search_tool.invoke({"query": query})
+        search_results.append(result)
+        messages.append(("assistant", f"Search for '{query}' completed."))
+
+    return {"search_results": search_results, "messages": messages}
+
 
 
 
