@@ -1,0 +1,6 @@
+langchain
+langgraph
+huggingface_hub
+langchain-mcp-adapters
+transformers
+mcp
