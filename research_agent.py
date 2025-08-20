@@ -26,3 +26,10 @@ client = MultiServerMCPClient(
     }
 )
 
+def manager_agent(state: ResearchState) -> ResearchState:
+    """Entry point for user queries, initializes state and routes to planner_agent."""
+    user_query = state["user_query"]
+    messages = state.get("messages", []) + [("user", user_query)]
+    return {"user_query": user_query, "messages": messages}
+
+
